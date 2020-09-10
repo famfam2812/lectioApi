@@ -24,10 +24,25 @@ class Driver():
         self.school = school
         self.elevid = elevid
         self.driver_path = driver_path
+
+        self.modul1 = '8:10-9:35'
+        self.modul2 = '9:50-11:15'
+        self.modul3 = '11:45-13:10'
+        self.modul4 = '13:20-14:45'
+        self.modul5 = '14:55-16:20'
+         
     
+    def changeTime(self, modul1, modul2, modul3, modul4, modul5):
+        self.modul1 = modul1
+        self.modul2 = modul2
+        self.modul3 = modul3
+        self.modul4 = modul4
+        self.modul5 = modul5
+        
+
     def getWeek(self):
         info = []
-
+        
         options = Options()
         options.headless = False
         options.add_argument("--window-size=600,600")
@@ -42,16 +57,17 @@ class Driver():
         loginBtn.click()
         
         driver.get(f"https://www.lectio.dk/lectio/{self.school}/SkemaNy.aspx?type=elev&elevid={self.elevid}")
-        sleep(1)
+        #sleep(1)
         soup = bs(driver.page_source, 'html.parser')
         #test = soup.find('div', class_="s2skemabrikcontent")
         divs = soup.find_all('a', class_="s2skemabrik s2bgbox s2withlink lec-context-menu-instance", href=True) + soup.find_all('a', class_="s2skemabrik s2bgbox s2changed s2withlink lec-context-menu-instance", href=True)
         
-
-        # flot vector med links til alle moduler
+    
+            # flot vector med links til alle moduler
         for a in divs:
             info.append("https://lectio.dk"+ a['href'])
 
+        print(len(info))
         #hent data fra alle moduler :D
         for a in info:
             driver.get(a)
@@ -59,17 +75,12 @@ class Driver():
 
             test = soup.find_all('div', class_="s2skemabrikcontent")
 
-            #for i in test:
-            print(test[0])
-
-
             
-
-
-
+            for i in test:
+                print(i.text.split(' '))
+        
+        
 
 driver = Driver(password, username, school, elevid, DRIVER_PATH)
 
 driver.getWeek()
-
-
